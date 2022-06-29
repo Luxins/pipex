@@ -6,7 +6,7 @@
 /*   By: ljahn <ljahn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 21:58:23 by ljahn             #+#    #+#             */
-/*   Updated: 2022/06/29 09:58:32 by ljahn            ###   ########.fr       */
+/*   Updated: 2022/06/29 10:20:43 by ljahn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ void	init_all(t_vars *vars, int ac, char **av, char **env)
 	conditions(vars);
 	if (vars->is_outfile)
 	{
-		vars->outfile = open(vars->av[ac - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		vars->outfile = open(vars->av[ac - 1], \
+		O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (vars->outfile == -1)
 		{
 			perror("open(outfile)");

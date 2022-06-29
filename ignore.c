@@ -6,7 +6,7 @@
 /*   By: ljahn <ljahn@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 21:25:39 by ljahn             #+#    #+#             */
-/*   Updated: 2022/06/29 10:00:52 by ljahn            ###   ########.fr       */
+/*   Updated: 2022/06/29 10:17:55 by ljahn            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	conditions2(t_vars *vars)
 	{
 		if (ft_strncmp(vars->av[1], "here_doc", 8))
 		{
-			vars->infile = open(vars->av[1], O_RDONLY | O_CREAT);
+			vars->infile = open(vars->av[1], O_RDONLY);
 			if (vars->infile == -1)
 			{
 				perror("open(infile)");
@@ -60,10 +60,8 @@ void	conditions2(t_vars *vars)
 			return ;
 		}
 		else
-		{
 			ft_putstr_fd("pipex: here_doc requires one additional argument", 2);
-			exit(-1);
-		}
+		exit(-1);
 	}
 }
 
