@@ -3,106 +3,94 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ljahn <ljahn@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ekraujin <ekraujin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/06 20:41:21 by ljahn             #+#    #+#             */
-/*   Updated: 2022/06/25 15:00:58 by ljahn            ###   ########.fr       */
+/*   Created: 2021/12/13 14:01:18 by ekraujin          #+#    #+#             */
+/*   Updated: 2022/01/10 21:56:13 by ekraujin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-/**
- * @brief Counts.
- *
- * @param c string
- * @return count
- */
-static size_t	ft_strlen(const char *c)
+static char	*ft_strchr(const char *s, int c)
 {
-	size_t	count;
-
-	count = 0;
-	while (*c)
-	{
-		count++;
-		c++;
-	}
-	return (count);
+	while (*s && *s != (char)c)
+		s++;
+	if (*s == (char )c)
+		return ((char *)s);
+	return (0);
 }
 
-char	*updater(char *cumulative)
+static char	*lbs(char *line, char *buf)
 {
-	int		i;
-	int		j;
-	char	*new_cumulative;
+	int		len;
+	char	*temp;
+	char	*end;
 
-	new_cumulative = malloc(sizeof(char) * (ft_strlen(cumulative) + 1));
-	if (!new_cumulative)
-		return (NULL);
-	i = 0;
-	while (cumulative[i] && cumulative[i] != '\n')
-		i++;
-	if (cumulative[i] == 0)
-	{
-		free(cumulative);
-		free(new_cumulative);
-		return (NULL);
-	}
-	i++;
-	j = 0;
-	while (cumulative[i - 1])
-		new_cumulative[j++] = cumulative[i++];
-	new_cumulative[j] = 0;
-	if (cumulative)
-		free(cumulative);
-	return (new_cumulative);
+	len = 0;
+	while (buf[len] != '\n')
+		len++;
+	end = ft_substr(buf, 0, len + 1);
+	temp = ft_strjoin(line, end);
+	free(line);
+	line = temp;
+	ft_memmove(buf, ft_strchr(buf, '\n') + 1, BUFFER_SIZE - len);
+	free(end);
+	return (line);
+}
+
+static char	*jaf(char *line, char *buf)
+{
+	char	*temp;
+
+	temp = ft_strjoin(line, buf);
+	free(line);
+	line = temp;
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	char static	*cumulative;
+	int			rs;
+	static char	buf[BUFFER_SIZE + 1];
 	char		*line;
 
-	if (fd < 0 || fd > 10240)
+	if (fd < 0)
 		return (NULL);
-	cumulative = reader(fd, cumulative);
-	if (!cumulative)
+	line = ft_calloc(1, sizeof(char));
+	while (!ft_strchr(buf, '\n'))
 	{
-		return (NULL);
+		if (*buf)
+			line = jaf(line, buf);
+		rs = read(fd, buf, BUFFER_SIZE);
+		if (rs < 0 || !buf[0])
+		{
+			free(line);
+			return (NULL);
+		}
+		buf[rs] = '\0';
+		if (rs < BUFFER_SIZE && !(ft_strchr(buf, '\n')) && line[0] && !buf[0])
+			return (line = jaf(line, buf));
 	}
-	if (cumulative[0] == 0)
-	{
-		free(cumulative);
-		return (NULL);
-	}
-	line = cutter(cumulative);
-	cumulative = updater(cumulative);
+	line = lbs(line, buf);
 	return (line);
 }
 
-// int	main(void)
+// # include <fcntl.h>
+// int main(void)
 // {
-// 	int		fd;
-// 	char	*line1;
-// 	char	*line2;
-// 	// char	*line3;
-// 	// char	*line4;
-// 	// char	*line5;
+//     int    fd;
+//     char *res;
+//     int i;
 
-// 	fd = open("bacon", O_RDWR);
-// 	line1 = get_next_line(fd);
-// 	line2 = get_next_line(fd);
-// 	// line3 = get_next_line(fd);
-// 	// line4 = get_next_line(fd);
-// 	// line5 = get_next_line(fd);
-// 	printf("%s", line1);
-// 	if (line2 == NULL)
-// 		printf("ACTUALLY A NULL.");
-// 	// printf("%s", line3);
-// 	// printf("%s", line4);
-// 	// printf("%s", line5);
-// 	close(fd);
-// 	free(line1);
-// 	free(line2);
+//     fd = open("text.txt", O_RDONLY);
+//     printf("Fd: %i\n",fd);
+//     i = 1;
+// 	res = get_next_line(fd);
+//     while (res)
+//     {
+//         printf("line %i: %s",i, res);
+//         i++;
+// 		res = get_next_line(fd);
+// 	}
 // }

@@ -3,28 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.h                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ljahn <ljahn@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ekraujin <ekraujin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/07 07:51:27 by ljahn             #+#    #+#             */
-/*   Updated: 2022/05/07 07:52:01 by ljahn            ###   ########.fr       */
+/*   Created: 2021/12/13 14:01:20 by ekraujin          #+#    #+#             */
+/*   Updated: 2022/01/10 21:54:01 by ekraujin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_BONUS_H
 # define GET_NEXT_LINE_BONUS_H
-// # define BUFFER_SIZE 20
 
 # include <unistd.h>
 # include <stdlib.h>
-# include <stdio.h>
-# include <fcntl.h>
-# include <string.h>
 
-char	*ft_strjoin(char *s1, char const *s2);
-char	*ft_strchr(const char *s, int c);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-size_t	ft_strlen(const char *c);
+# ifndef MAX_FD
+#  define MAX_FD 1024
+# endif
+
 char	*get_next_line(int fd);
-void	ft_bzero(char *str, int lenght);
+void	*ft_calloc(size_t nmemb, size_t size);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlen(const char *s);
+void	*ft_memmove(void *dest, const void *src, size_t n);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 #endif

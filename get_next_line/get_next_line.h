@@ -3,30 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ljahn <ljahn@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ekraujin <ekraujin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/06 20:43:04 by ljahn             #+#    #+#             */
-/*   Updated: 2022/06/25 14:55:50 by ljahn            ###   ########.fr       */
+/*   Created: 2021/12/13 14:01:20 by ekraujin          #+#    #+#             */
+/*   Updated: 2022/01/10 21:51:27 by ekraujin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
-// # define BUFFER_SIZE 10
 
 # include <unistd.h>
 # include <stdlib.h>
-# include <stdio.h>
-# include <fcntl.h>
-# include <string.h>
 
-//			ripped appart
-char	*reader(int fd, char *cumulative);
-
-char	*ft_strchr(const char *s, int c);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*get_next_line(int fd);
-char	*cutter(const char *cumulative);
-int		copier(char *dest, const char *src, int dest_start, int terminate);
+void	*ft_calloc(size_t nmemb, size_t size);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlen(const char *s);
+void	*ft_memmove(void *dest, const void *src, size_t n);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 
 #endif

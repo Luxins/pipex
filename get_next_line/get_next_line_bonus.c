@@ -3,134 +3,95 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ljahn <ljahn@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ekraujin <ekraujin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/07 07:51:21 by ljahn             #+#    #+#             */
-/*   Updated: 2022/05/07 07:55:03 by ljahn            ###   ########.fr       */
+/*   Created: 2021/12/13 14:01:18 by ekraujin          #+#    #+#             */
+/*   Updated: 2022/01/10 21:57:12 by ekraujin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-/**
- * @brief Reads the appropriate number of blocks.
- *
- * @param fd
- * @param cumulative The pruned cumulative value of the previous read
- * @return char* The new appropriate cumulative.
- */
-char	*reader(int fd, char *cumulative)
-{
-	int		bytes;
-	char	buffer[BUFFER_SIZE + 1];
 
-	bytes = 1;
-	while (!ft_strchr(cumulative, '\n'))
-	{
-		ft_bzero(buffer, BUFFER_SIZE);
-		bytes = read(fd, buffer, BUFFER_SIZE);
-		if (bytes == -1)
-			return (NULL);
-		if (bytes == 0)
-			break ;
-		cumulative = ft_strjoin(cumulative, buffer);
-	}
-	return (cumulative);
+char	*ft_strchr(const char *s, int c)
+{
+	while (*s && *s != (char)c)
+		s++;
+	if (*s == (char )c)
+		return ((char *)s);
+	return (0);
 }
 
-char	*cutter(const char *cumulative)
+char	*lbs(char *line, char *buf)
 {
-	char	*line;
-	int		j;
+	int		len;
+	char	*temp;
+	char	*end;
 
-	line = malloc(sizeof(char) * (ft_strlen(cumulative) + 1));
-	j = 0;
-	while (cumulative[j] && cumulative[j] != '\n')
-	{
-		line[j] = cumulative[j];
-		j++;
-	}
-	if (cumulative[j] == '\n')
-	{
-		line[j] = '\n';
-		line[j + 1] = 0;
-		return (line);
-	}
-	line[j] = 0;
+	len = 0;
+	while (buf[len] != '\n')
+		len++;
+	end = ft_substr(buf, 0, len + 1);
+	temp = ft_strjoin(line, end);
+	free(line);
+	line = temp;
+	ft_memmove(buf, ft_strchr(buf, '\n') + 1, BUFFER_SIZE - len);
+	free(end);
 	return (line);
 }
 
-char	*updater(char *cumulative)
+char	*jaf(char *line, char *buf)
 {
-	int		i;
-	int		j;
-	char	*new_cumulative;
+	char	*temp;
 
-	new_cumulative = malloc(sizeof(char) * (ft_strlen(cumulative) + 1));
-	if (!new_cumulative)
-		return (NULL);
-	i = 0;
-	while (cumulative[i] && cumulative[i] != '\n')
-		i++;
-	if (cumulative[i] == 0)
-	{
-		free(cumulative);
-		free(new_cumulative);
-		return (NULL);
-	}
-	i++;
-	j = 0;
-	while (cumulative[i - 1])
-		new_cumulative[j++] = cumulative[i++];
-	new_cumulative[j] = 0;
-	if (cumulative)
-		free(cumulative);
-	return (new_cumulative);
+	temp = ft_strjoin(line, buf);
+	free(line);
+	line = temp;
+	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*cumulative[10240];
+	int			rs;
+	static char	buf[MAX_FD][BUFFER_SIZE + 1];
 	char		*line;
 
-	if (fd < 0 || fd > 10240)
+	if (fd < 0)
 		return (NULL);
-	cumulative[fd] = reader(fd, cumulative[fd]);
-	if (!cumulative[fd])
+	line = ft_calloc(1, sizeof(char));
+	while (!ft_strchr(buf[fd], '\n'))
 	{
-		return (NULL);
+		if (*buf[fd])
+			line = jaf(line, buf[fd]);
+		rs = read(fd, buf[fd], BUFFER_SIZE);
+		if (rs < 0 || !buf[fd][0])
+		{
+			free(line);
+			return (NULL);
+		}
+		buf[fd][rs] = '\0';
+		if (rs < BUFFER_SIZE && !(ft_strchr(buf[fd], '\n'))
+			&& line[0] && !buf[fd][0])
+			return (line = jaf(line, buf[fd]));
 	}
-	if (cumulative[fd][0] == 0)
-	{
-		free(cumulative[fd]);
-		return (NULL);
-	}
-	line = cutter(cumulative[fd]);
-	cumulative[fd] = updater(cumulative[fd]);
+	line = lbs(line, buf[fd]);
 	return (line);
 }
 
-// int	main(void)
+// # include <fcntl.h>
+// int main(void)
 // {
-// // 	int		fd;
-// // 	char	*line1;
-// // 	char	*line2;
-// // 	// char	*line3;
-// // 	// char	*line4;
-// // 	// char	*line5;
+//     int    fd;
+//     char *res;
+//     int i;
 
-// // 	fd = open("bacon", O_RDWR);
-// // 	line1 = get_next_line(fd);
-// // 	line2 = get_next_line(fd);
-// // 	// line3 = get_next_line(fd);
-// // 	// line4 = get_next_line(fd);
-// // 	// line5 = get_next_line(fd);
-// // 	printf("%s", line1);
-// // 	if (line2 == NULL)
-// // 		printf("ACTUALLY A NULL.");
-// // 	// printf("%s", line3);
-// // 	// printf("%s", line4);
-// // 	// printf("%s", line5);
-// // 	close(fd);
-// // 	free(line1);
-// // 	free(line2);
+//     fd = open("text.txt", O_RDONLY);
+//     printf("Fd: %i\n",fd);
+//     i = 1;
+// 	res = get_next_line(fd);
+//     while (res)
+//     {
+//         printf("line %i: %s",i, res);
+//         i++;
+// 		res = get_next_line(fd);
+// 	}
 // }
